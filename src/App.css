@@ -20,3 +20,30 @@ nav a.active {
   background: #333;
   text-decoration: none;
 }
+.LoginBox {
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+  border-radius: 5px;
+  background-color: ivory;
+}
+
+.Login-box form {
+  margin: 3vw;
+  text-align: left;
+  align-content: center;
+}
+input {
+  width: 60%;
+  display: inline;
+}
+label {
+  display: inline;
+}
+button {
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}

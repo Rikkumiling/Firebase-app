@@ -18,6 +18,8 @@ import Home from "./pages/Home";
 import Article from "./pages/Article";
 import FormArticle from "./pages/FormArticle";
 import UpdateArticle from "./pages/UpdateArticle";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "./firebase/config";
 
 function App() {
   // const articles = [
@@ -41,27 +43,77 @@ function App() {
   //   }
   // ];
 
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <nav>
-          <h1>My Articles</h1>
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/about">About</NavLink>
-          <NavLink to="/contact">Contact</NavLink>
-          <NavLink to="/new">New Article</NavLink>
-        </nav>
+  const [login, setLogin] = useState(false);
+  const [username, setUsername] = useState("");
+  //test username: Rikku
+  const [password, setPassword] = useState("");
+  //test password: Test
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/articles/:urlId" element={<Article />} />
-          <Route path="/new" element={<FormArticle />} />
-          <Route path="/*" element={<Navigate to="/" />} />
-          <Route path="/update/" element={<UpdateArticle />} />
-        </Routes>
-      </BrowserRouter>
+  const Validate = async (e) => {
+    e.preventDefault();
+    try {
+      const querySnapshot = await getDocs(collection(db, "accounts"));
+      querySnapshot.forEach((doc) => {
+        const userData = doc.data();
+        if (userData.username === username && userData.password === password) {
+          setLogin(true);
+        } else {
+          alert("Invalid username or password");
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  return (
+    <div>
+      {!login ? (
+        <div className="LoginBox">
+          <h1>Login</h1>
+          <form>
+            <div>
+              <label>Username: </label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              ></input>
+            </div>
+            <div>
+              <label>Password: </label>
+              <input
+                type="text"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              ></input>
+            </div>
+            <button onClick={Validate}>Login</button>
+          </form>
+        </div>
+      ) : (
+        <div className="App">
+          <BrowserRouter>
+            <nav>
+              <h1>My Articles</h1>
+              <NavLink to="/">Home</NavLink>
+              <NavLink to="/about">About</NavLink>
+              <NavLink to="/contact">Contact</NavLink>
+              <NavLink to="/new">New Article</NavLink>
+            </nav>
+
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/articles/:urlId" element={<Article />} />
+              <Route path="/new" element={<FormArticle />} />
+              <Route path="/*" element={<Navigate to="/" />} />
+              <Route path="/update/" element={<UpdateArticle />} />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      )}
     </div>
   );
 }
